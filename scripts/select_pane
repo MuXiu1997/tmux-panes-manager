@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+fzf_command="tmux list-panes -a"
+
+pane=$(eval $fzf_command | fzf-tmux -p -- --reverse --header="Ctrl-D: Kill pane" --bind='ctrl-d:execute-silent(p={};tmux kill-pane -t "${p%: *}")+reload('"$fzf_command"')')
+[[ -n "$pane" ]] && exec tmux switch-client -t "${pane%: *}"
+exit 0

@@ -1,0 +1,29 @@
+#!/usr/bin/env bash
+
+pane="$1"
+
+panes=()
+while read -r line; do
+    panes+=("$line")
+done <<< "$(tmux list-panes -a)"
+
+[[ ${#panes[@]} == 1 ]] && exec tmux display-message -t "$pane" "Only one pane"
+
+first_pane_env=$(printf '%s\n' "${panes[@]}" | fzf-tmux -p -- --reverse --header="Select the first pane")
+first_pane="${first_pane_env#*=}"
+
+[[ -z "$first_pane" ]] && exec tmux display-message -t "$pane" "Canceled swap pane"
+
+tmp=()
+for(( i=0; i<${#panes[@]}; i++ )); do
+    [[ "${panes[i]}" != "$first_pane" ]] && tmp+=("${panes[i]}")
+done
+panes=("${tmp[@]}")
+unset tmp
+
+second_pane_env=$(printf '%s\n' "${panes[@]}" | fzf-tmux -p -- --reverse --header="Select the first pane")
+second_pane="${second_pane_env#*=}"
+
+[[ -z "$second_pane" ]] && exec tmux display-message -t "$pane" "Canceled swap pane"
+
+tmux swap-pane -s "${first_pane%: *}" -t "${second_pane%: *}"
