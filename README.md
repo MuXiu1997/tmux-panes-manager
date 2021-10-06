@@ -13,7 +13,7 @@ Depends:
 Add plugin to the list of TPM plugins in .tmux.conf:
 
 ```shell
-set -g @plugin 'MuXiu1997/tmux-panes-manager'
+set -g @plugin 'MuXiu1997/tmux-panes-manager#main'
 ```
 
 Hit `prefix` + <kbd>I</kbd> to fetch the plugin and source it
